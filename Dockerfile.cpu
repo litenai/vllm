@@ -38,9 +38,6 @@ FROM cpu-test-1 AS build
 WORKDIR /workspace/vllm
 
 RUN --mount=type=cache,target=/root/.cache/pip \
-    python3 -m pip install git+https://github.com/huggingface/transformers
-
-RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,src=requirements-common.txt,target=requirements-common.txt \
     --mount=type=bind,src=requirements-cpu.txt,target=requirements-cpu.txt \
     pip install -v -r requirements-cpu.txt
