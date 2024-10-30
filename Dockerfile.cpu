@@ -38,6 +38,9 @@ FROM cpu-test-1 AS build
 WORKDIR /workspace/vllm
 
 RUN --mount=type=cache,target=/root/.cache/pip \
+    python3 -m pip install git+https://github.com/huggingface/transformers
+
+RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,src=requirements-common.txt,target=requirements-common.txt \
     --mount=type=bind,src=requirements-cpu.txt,target=requirements-cpu.txt \
     pip install -v -r requirements-cpu.txt
@@ -50,6 +53,9 @@ RUN --mount=type=bind,source=.git,target=.git \
 # Support for building with non-AVX512 vLLM: docker build --build-arg VLLM_CPU_DISABLE_AVX512="true" ...
 ARG VLLM_CPU_DISABLE_AVX512
 ENV VLLM_CPU_DISABLE_AVX512=${VLLM_CPU_DISABLE_AVX512}
+
+ARG VLLM_CPU_KVCACHE_SPACE=16
+ENV VLLM_CPU_KVCACHE_SPACE=${VLLM_CPU_KVCACHE_SPACE}
 
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=cache,target=/root/.cache/ccache \
