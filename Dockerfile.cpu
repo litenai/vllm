@@ -48,10 +48,10 @@ RUN --mount=type=bind,source=.git,target=.git \
     if [ "$GIT_REPO_CHECK" != 0 ]; then bash tools/check_repo.sh ; fi
 
 # Support for building with non-AVX512 vLLM: docker build --build-arg VLLM_CPU_DISABLE_AVX512="true" ...
-ARG VLLM_CPU_DISABLE_AVX512
+ARG VLLM_CPU_DISABLE_AVX512="false"
 ENV VLLM_CPU_DISABLE_AVX512=${VLLM_CPU_DISABLE_AVX512}
 
-ARG VLLM_CPU_KVCACHE_SPACE=16
+ARG VLLM_CPU_KVCACHE_SPACE=8
 ENV VLLM_CPU_KVCACHE_SPACE=${VLLM_CPU_KVCACHE_SPACE}
 
 RUN --mount=type=cache,target=/root/.cache/pip \
@@ -62,6 +62,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     rm -rf dist
 
 WORKDIR /workspace/
+COPY ./examples/tool_chat_template_llama3.2_json.jinja .
 
 RUN ln -s /workspace/vllm/tests && ln -s /workspace/vllm/examples && ln -s /workspace/vllm/benchmarks
 
